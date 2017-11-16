@@ -52,9 +52,7 @@ def main():
     for ii in range(0,niter):
         #generate flow matrix
         tflow=np.zeros([ncat,ncat],dtype='f8')
-        #tte=np.ones(ncat)*.1
-        tmax=np.random.randint(20,460,size=1)*.01
-        tte=np.random.randint(50,tmax*1000,size=ncat)*.0001
+        tte=np.random.randint(100,5000,size=ncat)*.0001
         tte[0]=0.0
             
         for jj in range(0,(ncat-1)):
