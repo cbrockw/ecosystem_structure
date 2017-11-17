@@ -5,5 +5,5 @@ The code provided here was used to generate all data and figures in Woodson, C.B
 
 Files and Descriptions
 
-compute_biomass_genpred.py - main computational code for model simulations (Python)
+compute_biomass_genpred_v11.py - main computational code for model simulations (Python)
 ecosystemstructure_figures.m - Matlab scripts to generate figures
