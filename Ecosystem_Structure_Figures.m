@@ -1,8 +1,7 @@
 % Data Preparation 
 close all; clear all;
 
-%mdlfile='/Data/cobialab/conserveandclimate/model_data/tte_biomass_genpred_ap_20171017.nc';
-mdlfile='/Data/cobialab/conserveandclimate/model_data/tte_biomass_corr2_20170817.nc';
+mdlfile='/Data/cobialab/conserveandclimate/model_data/tte_biomass_genpred_final_20171116.nc';
 
 total_mass=ncread(mdlfile,'total_mass');
 mass_dens=ncread(mdlfile,'mass_dens');
