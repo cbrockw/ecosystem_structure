@@ -1,5 +1,4 @@
 % Data Preparation 
-close all; clear all;
 
 mdlfile='/Data/cobialab/conserveandclimate/model_data/tte_biomass_genpred_final_20171116.nc';
 
@@ -298,87 +297,6 @@ xx(4)=10.^P(2).*imass(4).^P(1);
 xx=xx./.12.*1000.^2; %convert to kg per km2
 
 yy=scale.*[59; 96-59; 111-96; 194-111].*1000; %convert to kg per km2
-
-%% Nat Com Fig. S1 (Convergence Plot) 
-% Need to use different Data File
-clear all; close all;
-
-mdlfile='/Data/cobialab/conserveandclimate/model_data/tte_biomass_corr2_20161122.nc';
-%mdlfile='/Data/cobialab/conserveandclimate/model_data/tte_biomass_genpred_20170817.nc';
-
-total_mass=ncread(mdlfile,'total_mass');
-mass_dens=ncread(mdlfile,'mass_dens');
-orgmass=ncread(mdlfile,'org_mass');
-tte=ncread(mdlfile,'tte');
-tweb=ncread(mdlfile,'flow_matrix');
-
-ncat=length(orgmass);
-numscen=4;
-niter = length(total_mass);
-niter2 = floor(niter/numscen);
-
-lmassdens=log10(mass_dens);
-lmassdens(isinf(lmassdens))=NaN;
-
-%initialize computed variables
-k=zeros(niter2,numscen);ttem=zeros(niter2,numscen);
-ld=zeros(niter2,numscen);conn=zeros(niter2,numscen);
-ppmr=zeros(niter2,numscen);
-
-MD=zeros(niter2,numscen);
-TD=zeros(ncat,niter2,numscen);
-
-for jj=1:numscen
-    MD(:,jj)=nansum(mass_dens(:,((jj-1)*niter2+1):(jj*niter2)));
-    TD(:,:,jj)=mass_dens(:,(jj-1)*niter2+1:(jj*niter2));
-end
-
-for ii=1:niter2
-    for jj=1:numscen
-    %combined simulations
-        temp=ii+(jj-1)*niter2;
-        S(ii,jj)=length(orgmass(mass_dens(:,temp)>0));
-        I=find(isfinite(lmassdens(:,temp)));
-        [P,S1]=polyfit(log10(orgmass(I)),lmassdens(I,temp),1);
-        k(ii,jj)=P(1);
-
-    %progress reporting
-        if rem(ii,(niter2/20))==0
-            disp([num2str(ii/niter2*100),'% done...']);
-        end
-    end
-end
-
-temp=1;
-clear meantest stdtest;
-ndata=[2 3 4 5 6 7 8 9 10 20 40 60 80 100 200 400 600 800 1000 2000 4000 6000 8000 10000];
-
-for jj=1:length(ndata)
-    for ii=1:10     
-        idx=randi(25000,ndata(jj),1);
-        meantest(ii,temp)=nanmean(k(idx,4));
-        stdtest(ii,temp)=nanstd(k(idx,4));
-    end
-    temp=temp+1;
-end
-
-figure('position',[400 400 1200 600]);
-cc=get(gca,'colororder');
-
-patch([ndata fliplr(ndata) ndata(1)],[min(meantest) fliplr(max(meantest)) min(meantest(:,1))],cc(1,:),'facealpha',0.2,'edgecolor','none'); hold on;
-patch([ndata fliplr(ndata) ndata(1)],[min(stdtest)./sqrt(ndata) fliplr(max(stdtest)./sqrt(ndata)) min(stdtest(:,1))./sqrt(ndata(1))],cc(2,:),'facealpha',0.2,'edgecolor','none'); hold on;
-
-plot(ndata,nanmean(meantest),'linewidth',2); hold on;
-plot(ndata,nanmean(stdtest)./sqrt(ndata),'linewidth',2);
-plot([2000 2000],[-.4 .2],'k','linewidth',2);
-%set(gca,'yscale','log','fontsize',16,'fontweight','bold');
-set(gca,'xscale','log','fontsize',24,'fontweight','bold');
-grid on; box on; axis([2 1e4 -.2 .2]);
-xlabel('$n$','Interpreter','latex','fontsize',32); ylabel('$\mu, SE$','Interpreter','latex','fontsize',32);
-lg1=legend('$\mu$','$SE$');
-set(lg1,'Interpreter','latex');
-
-%export_fig convergence_plot.png -png -r150 -transparent
 
 
 
